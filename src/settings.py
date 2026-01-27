@@ -5,6 +5,7 @@ import json
 import importlib.resources
 from pydantic_settings import BaseSettings, SettingsConfigDict
 import os
+from pathlib import Path
 
 settings_dir = importlib.resources.files(__name__)
 
@@ -38,6 +39,6 @@ def recursive_pydantic_settings_model(data: Dict[str, Any]) -> Settings:
     return DynamicModel()
 
 defaults_file = open(settings_dir / 'settings.yaml', 'r')
-other_file = open(os.getcwd() / 'settings.yaml', 'r')
+other_file = open(Path(os.getcwd()) / 'settings.yaml', 'r')
 
 settings = recursive_pydantic_settings_model({**yaml.full_load(defaults_file), **yaml.full_load(other_file), **os.environ})

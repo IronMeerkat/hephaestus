@@ -1,13 +1,27 @@
 [project]
 name = "hephaestus"
 version = "0.1.0"
-description = "Add your description here"
+description = "Toolkit for various AI projects"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "elasticsearch>=9.2.1",
+    "ipykernel>=7.1.0",
+    "langchain>=1.2.1",
+    "langchain-chroma>=1.1.0",
+    "langchain-community>=0.4.1",
+    "langchain-ollama>=1.0.1",
+    "langchain-openai>=1.1.6",
+    "langchain-xai>=1.2.1",
+    "langfuse>=3.12.1",
+    "langgraph>=1.0.5",
+    "langgraph-checkpoint>=3.0.1",
+    "langgraph-checkpoint-redis>=0.3.2",
+    "mem0ai>=1.0.1",
     "pydantic>=2.12.5",
     "pydantic-settings>=2.12.0",
     "pyyaml>=6.0.3",
+    "redis>=7.1.0",
+    "redisvl>=0.13.2",
     "streamlit>=1.52.2",
 ]
