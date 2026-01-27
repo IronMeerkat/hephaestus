@@ -4,14 +4,14 @@ import threading
 from logging import PlaceHolder, getLogger
 from logging.config import dictConfig
 
-from src.settings import settings
-from src.helpers import nested_update
+from hephaestus.settings import settings
+from hephaestus.helpers import nested_update
 
 logger = getLogger('hephaestus.logging')
 
 
 def init_logger():
-    logging_config = settings.logging.dict()
+    logging_config = settings.logging.model_dump()
 
     handlers = logging_config['handlers']
     loggers = logging_config.get('loggers', {})

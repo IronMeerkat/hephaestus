@@ -64,13 +64,13 @@ class CustomFormatter(logging.Formatter):
     def formatMessage(self, record):
         msg = super().formatMessage(record)
 
-        if ctx:
-            context = f'    {NORM}Context({ctx})'
-            total_length = len(record.message) + len(context)
-            if total_length > 200 or '\n' in record.message:
-                msg = f'{msg}\n{context}'
-            else:
-                msg += context
+        # if ctx:
+        #     context = f'    {NORM}Context({ctx})'
+        #     total_length = len(record.message) + len(context)
+        #     if total_length > 200 or '\n' in record.message:
+        #         msg = f'{msg}\n{context}'
+        #     else:
+        #         msg += context
 
         if '\n' in msg:
             first, *others = msg.split('\n')

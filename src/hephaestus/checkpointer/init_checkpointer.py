@@ -1,5 +1,5 @@
 import asyncio
-from src.settings import settings
+from hephaestus.settings import settings
 from langgraph.checkpoint.redis.aio import AsyncRedisSaver
 
 async def _setup_checkpointer():

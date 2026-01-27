@@ -1,3 +1,7 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project]
 name = "hephaestus"
 version = "0.1.0"
@@ -25,3 +29,6 @@ dependencies = [
     "redisvl>=0.13.2",
     "streamlit>=1.52.2",
 ]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/hephaestus"]

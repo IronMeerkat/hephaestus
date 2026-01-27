@@ -4,7 +4,7 @@ logging:
 
   formatters:
     custom:
-      class: src.logging.formatters.CustomFormatter
+      class: hephaestus.logging.formatters.CustomFormatter
 
   handlers:
     console:
@@ -14,7 +14,7 @@ logging:
       stream: ext://sys.stdout
 
     elastic:
-      class: src.logging.elastic_handler.ElasticHandler
+      class: hephaestus.logging.elastic_handler.ElasticHandler
       level: DEBUG
 
   loggers:
@@ -62,6 +62,6 @@ logging:
     # will be deleted by adding settings in other places unintentionally.
     debug: []
     info: []
-    warning: []
+    WARNING: ['engineio.server', 'socketio.server', 'elastic_transport.transport']
     error: []
     critical: []
