@@ -47,6 +47,19 @@ logging:
     debug:
       level: ERROR
 
+    langchain_core.callbacks.manager:
+      level: ERROR
+
+    engineio.server:
+      level: WARNING
+
+    socketio.server:
+      level: WARNING
+
+    elastic_transport.transport:
+      level: WARNING
+
+
   root:
     level: INFO
     handlers:
@@ -62,6 +75,6 @@ logging:
     # will be deleted by adding settings in other places unintentionally.
     debug: []
     info: []
-    WARNING: ['engineio.server', 'socketio.server', 'elastic_transport.transport']
+    WARNING: []
     error: []
     critical: []

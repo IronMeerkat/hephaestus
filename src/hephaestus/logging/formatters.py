@@ -39,7 +39,7 @@ class CustomFormatter(logging.Formatter):
         # chars for coloring. So The format is hard coded.
         # Any *args, **kwargs passed to the factory are ignored.
         fmt = (f'{WHITE}%(asctime)s{NORM} '
-               f'%(level_emoji)s %(name_color)s%(levelname)-7.7s{NORM} '
+               f'%(level_emoji)s {NORM} '
                f'[{DARK_GREEN}%(name)s{NORM}] '
                f'{self._msg_color}%(message)s{NORM}')
         super().__init__(fmt=fmt, datefmt=None, style='%')
