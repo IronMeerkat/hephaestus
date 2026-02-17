@@ -9,8 +9,10 @@ description = "Toolkit for various AI projects"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "celery>=5.6.2",
     "elasticsearch>=9.2.1",
     "ipykernel>=7.1.0",
+    "kombu>=5.6.2",
     "langchain>=1.2.1",
     "langchain-chroma>=1.1.0",
     "langchain-community>=0.4.1",
