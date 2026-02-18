@@ -21,10 +21,10 @@ def _wrap_agent_return_delta(agent: object) -> object:
     This wrapper extracts only the new messages the agent produced.
     """
 
-    def wrapper(state: AgentSwarmState, config: RunnableConfig | None = None) -> dict:
+    async def wrapper(state: AgentSwarmState, config: RunnableConfig | None = None) -> dict:
         invoke_config = dict(config) if config else {}
         invoke_config["run_name"] = agent.name  # preserve character name in Langfuse when subgraph
-        result = agent.invoke({"messages": state.messages}, invoke_config)
+        result = await agent.ainvoke({"messages": state.messages}, invoke_config)
         output_messages = result['messages']
         len_input = len(state.messages)
         len_output = len(output_messages)
