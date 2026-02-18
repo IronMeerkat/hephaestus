@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+# Note: README.md is needed for package build, so not excluded
+docs/
+*.md
+!README.md
+
+# Other
+.DS_Store
+Dockerfile
+.dockerignore
+sandbox.ipynb
