@@ -1,3 +1,16 @@
 {
-    "folder-color.pathColors": []
+    "folder-color.pathColors": [],
+    "files.exclude": {
+        "**/.venv/**": true,
+        "**/.git/**": true,
+        "**/.gitignore": true,
+        "**/.cursor/**": true,
+        "**/.cursor/debug.log*": true,
+        "**/__pycache__/**": true,
+        "**/.chainlit/**": true,
+        "**/*.pyc": true,
+        ".python-version": true,
+        "uv.lock": true,
+        "**/*.egg-info/**": true,
+    }
 }
