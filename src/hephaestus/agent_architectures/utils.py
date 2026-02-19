@@ -13,6 +13,12 @@ class AgentSwarmState(BaseModel):
     messages: Annotated[list[AnyMessage], operator.add]
 
 
+def message_delta(input_messages: list[AnyMessage], output_messages: list[AnyMessage]) -> list[AnyMessage]:
+    len_input = len(input_messages)
+    len_output = len(output_messages)
+    return output_messages[len_input:] if len_input <= len_output else []
+
+
 def _wrap_agent_return_delta(agent: object) -> object:
     """Wrap an agent so it returns only the messages it added (delta), not the full list.
 
@@ -26,9 +32,7 @@ def _wrap_agent_return_delta(agent: object) -> object:
         invoke_config["run_name"] = agent.name  # preserve character name in Langfuse when subgraph
         result = await agent.ainvoke({"messages": state.messages}, invoke_config)
         output_messages = result['messages']
-        len_input = len(state.messages)
-        len_output = len(output_messages)
-        delta = output_messages[len_input:] if len_input <= len_output else []
+        delta = message_delta(state.messages, output_messages)
         return {"messages": delta}
 
     return wrapper
