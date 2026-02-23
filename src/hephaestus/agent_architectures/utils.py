@@ -7,7 +7,7 @@ from langgraph.graph import END, START, StateGraph
 from pydantic import BaseModel
 
 
-class AgentSwarmState(BaseModel):
+class AgentSwarmState(BaseModel, extra='allow'):
     """🐝 Shared state flowing through every node in an agent swarm."""
 
     messages: Annotated[list[AnyMessage], operator.add]

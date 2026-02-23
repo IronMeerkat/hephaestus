@@ -9,8 +9,8 @@ def create_daisy_chain(*agents: StateGraph, name: str) -> StateGraph:
     if not all(hasattr(a, 'name') for a in agents):
         raise ValueError("All agents must have a name.")
 
-    if len(agents) < 2:
-        raise ValueError("A daisy chain must have at least two agents.")
+    # if len(agents) < 2:
+    #     raise ValueError("A daisy chain must have at least two agents.")
 
     graph = StateGraph[AgentSwarmState, None, AgentSwarmState, AgentSwarmState](AgentSwarmState)
 
