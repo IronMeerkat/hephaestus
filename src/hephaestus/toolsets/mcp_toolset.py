@@ -45,6 +45,15 @@ class MCPToolset:
     exact same session regardless of which loop/thread an agent invokes them
     from. The returned tools are synchronous: calling one hops the work onto the
     background loop and blocks until it resolves.
+
+    Tool calls are also **serialized**: a single per-toolset lock guarantees that
+    only one tool is ever in flight against this toolset's MCP session(s) at a
+    time. Agents (e.g. LangGraph's tool node) happily fire multiple tool calls
+    concurrently, and a stdio MCP server backed by a single stateful resource
+    (a browser tab, a page snapshot, ...) cannot survive that: parallel calls
+    race and you get "stale/invalid, call take_snapshot first" or
+    "element is not reachable" style errors. The lock makes concurrent callers
+    queue up and run one-at-a-time instead. 🔒
     """
 
     def __init__(self, servers: dict[str, dict], *, logger_name: str = __name__):
@@ -64,6 +73,10 @@ class MCPToolset:
         # Signalling between the calling thread and the session task.
         self._ready: "Future[list[BaseTool]]" = Future()
         self._shutdown_event: asyncio.Event | None = None
+        # Serializes every tool call so only one runs against the shared MCP
+        # session(s) at a time. Created on (and therefore bound to) the
+        # background loop inside ``_session_main``. 🔒
+        self._tool_lock: asyncio.Lock | None = None
         self._session_future = asyncio.run_coroutine_threadsafe(
             self._session_main(), self._loop
         )
@@ -173,6 +186,9 @@ class MCPToolset:
         "exit cancel scope in a different task" error.
         """
         self._shutdown_event = asyncio.Event()
+        # Bind the lock to this loop (constructing it here guarantees it lives
+        # on the same loop every tool coroutine is scheduled onto). 🔒
+        self._tool_lock = asyncio.Lock()
         try:
             async with contextlib.AsyncExitStack() as stack:
                 tools: list[BaseTool] = []
@@ -202,13 +218,24 @@ class MCPToolset:
         them from any other event loop would corrupt the session. This wrapper
         hops every call back onto ``self._loop`` and blocks until it resolves,
         giving callers a plain synchronous tool to bind to a model.
+
+        Each call is additionally guarded by ``self._tool_lock`` so concurrent
+        tool calls queue up and run one-at-a-time, never racing on the shared
+        session. 🔒
         """
         original_coroutine = tool.coroutine
         loop = self._loop
 
+        async def _locked_call(*args, **kwargs):
+            # Acquired on the background loop, so a busy toolset simply parks
+            # the waiting coroutines here instead of letting them race.
+            assert self._tool_lock is not None  # set in _session_main before tools bind
+            async with self._tool_lock:
+                return await original_coroutine(*args, **kwargs)
+
         def _run(*args, **kwargs):
             future = asyncio.run_coroutine_threadsafe(
-                original_coroutine(*args, **kwargs), loop
+                _locked_call(*args, **kwargs), loop
             )
             return future.result()
 
