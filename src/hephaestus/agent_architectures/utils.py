@@ -1,16 +1,21 @@
 import operator
-from typing import Annotated
+from typing import Annotated, Any, Callable
 
 from langchain_core.messages import AnyMessage
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph import END, START, StateGraph
+from langgraph.graph.state import CompiledStateGraph
+from langgraph.graph.message import add_messages
+
 from pydantic import BaseModel
 
 
 class AgentSwarmState(BaseModel, extra='allow'):
     """🐝 Shared state flowing through every node in an agent swarm."""
 
-    messages: Annotated[list[AnyMessage], operator.add]
+    # messages: Annotated[list[AnyMessage], operator.add]
+    messages: Annotated[list[AnyMessage], add_messages]
+
 
 
 def message_delta(input_messages: list[AnyMessage], output_messages: list[AnyMessage]) -> list[AnyMessage]:
@@ -36,3 +41,20 @@ def _wrap_agent_return_delta(agent: object) -> object:
         return {"messages": delta}
 
     return wrapper
+
+
+def function_to_graph(
+    func: Callable[..., Any],
+    state_schema: type[BaseModel] = AgentSwarmState,
+    name: str | None = None,
+) -> CompiledStateGraph:
+    """🔧 Wrap any sync/async callable (state -> state update) into a one-node graph.
+
+    The result can be passed to `parent.add_node(...)` like any other node.
+    """
+    name = name or getattr(func, "__name__", "function")
+    graph = StateGraph(state_schema)
+    graph.add_node(name, func)
+    graph.add_edge(START, name)
+    graph.add_edge(name, END)
+    return graph.compile(name=name)
